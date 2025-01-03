@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TeaSpire</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="content-wrapper">
+        <div id="game-container">
+            <!-- Main Menu -->
+            <div id="main-menu" class="menu-screen active">
+                <h1 class="game-title">TeaSpire</h1>
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="showScreen('modes-menu')">Play</button>
+                    <button class="menu-button" onclick="showScreen('settings-menu')">Settings</button>
+                    <button class="menu-button" onclick="showScreen('tutorial-menu')">Tutorial</button>
+                    <button class="menu-button" onclick="showScreen('credits-menu')">Credits</button>
+                </div>
+            </div>
+
+            <!-- Modes Menu -->
+            <div id="modes-menu" class="menu-screen">
+                <h2>Game Modes</h2>
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="startGame('endless')">Endless</button>
+                    <button class="menu-button" onclick="showScreen('wip-menu')">VS Mode</button>
+                    <button class="menu-button" onclick="showScreen('wip-menu')">Time Attack</button>
+                    <button class="menu-button" onclick="showScreen('wip-menu')">Survival</button>
+                    <button class="menu-button back-button" onclick="showScreen('main-menu')">Back</button>
+                </div>
+            </div>
+
+            <!-- Settings Menu -->
+            <div id="settings-menu" class="menu-screen">
+                <h2>Settings</h2>
+                <div class="wip-content">
+                    <p>Work in Progress</p>
+                    <div class="loading-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <button class="menu-button back-button" onclick="showScreen('main-menu')">Back</button>
+            </div>
+
+            <!-- WIP Menu -->
+            <div id="wip-menu" class="menu-screen">
+                <h2>Work in Progress</h2>
+                <div class="wip-content">
+                    <p>This game mode is coming soon!</p>
+                    <div class="loading-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <button class="menu-button back-button" onclick="showScreen('modes-menu')">Back</button>
+            </div>
+
+            <!-- Tutorial Menu -->
+            <div id="tutorial-menu" class="menu-screen">
+                <div class="tutorial-content">
+                    <h2>Controls</h2>
+                    <div class="control-list">
+                        <div class="control-item">
+                            <span class="key">←</span>
+                            <span class="description">Move Left</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">→</span>
+                            <span class="description">Move Right</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">P</span>
+                            <span class="description">Pause Game</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">R</span>
+                            <span class="description">Restart (when game over)</span>
+                        </div>
+                    </div>
+                    <div class="tutorial-tips">
+                        <h3>Tips:</h3>
+                        <ul>
+                            <li>Jump from platform to platform to gain height</li>
+                            <li>Watch your landing, you'll automatically jump when hitting a platform</li>
+                            <li>The higher you go, the more the environment changes</li>
+                            <li>Try to beat your high score!</li>
+                        </ul>
+                    </div>
+                    <button onclick="showScreen('main-menu')">Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Add credits screen -->
+            <div id="credits-menu" class="menu-screen">
+                <div class="credits-content">
+                    <h2>Credits</h2>
+                    <div class="credit-item">
+                        <p class="credit-title">Game Developer</p>
+                        <p class="credit-name">Tea15261</p>
+                    </div>
+                    <button onclick="showScreen('main-menu')">Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="menu-screen"></div>
+        </div>
+        <button id="game-back-button" class="menu-button back-button" onclick="exitGame()">Exit to Menu</button>
+    </div>
+    <script src="menu.js"></script>
+    <script src="game.js"></script>
+</body>
+</html> 

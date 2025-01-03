@@ -1,0 +1,285 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#game-container {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.menu-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.menu-screen.active {
+    display: flex;
+}
+
+#game-screen {
+    background: black;
+}
+
+#game-screen.active {
+    display: block !important;
+}
+
+.game-title {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 40px;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.5),
+        0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+h2 {
+    color: white;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-button {
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+    min-width: 200px;
+}
+
+.back-button {
+    background: linear-gradient(45deg, #ff4444, #cc0000);
+}
+
+.menu-button:hover {
+    transform: scale(1.05);
+}
+
+#game-back-button {
+    display: none;
+}
+
+.game-active #game-back-button {
+    display: block;
+}
+
+#gameCanvas {
+    display: block;
+    background: white;
+    width: 400px;
+    height: 600px;
+}
+
+.wip-content {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.loading-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.loading-dots span {
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    animation: loading 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loading {
+    0%, 100% {
+        transform: scale(0.3);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Tutorial Screen Styles */
+.tutorial-content {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.tutorial-content h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.control-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.key {
+    background: #333;
+    padding: 8px 15px;
+    border-radius: 5px;
+    min-width: 40px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.description {
+    font-size: 16px;
+}
+
+.tutorial-tips {
+    color: white;
+    margin-bottom: 30px;
+}
+
+.tutorial-tips h3 {
+    margin-bottom: 10px;
+    color: #4CAF50;
+}
+
+.tutorial-tips ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.tutorial-tips li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.tutorial-tips li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+}
+
+#tutorial-menu button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#tutorial-menu button:hover {
+    background: #45a049;
+}
+
+/* Credits Screen Styles */
+.credits-content {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.credits-content h2 {
+    color: white;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.credit-item {
+    margin-bottom: 30px;
+}
+
+.credit-title {
+    color: #4CAF50;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.credit-name {
+    color: white;
+    font-size: 24px;
+    margin: 0;
+}
+
+#credits-menu button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#credits-menu button:hover {
+    background: #45a049;
+} 
