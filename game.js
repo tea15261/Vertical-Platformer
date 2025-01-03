@@ -567,6 +567,26 @@ function update() {
         return;
     }
 
+     // Apply gravity
+     player.velocityY += player.gravity;
+    
+     // Update player position
+     player.x += player.velocityX;
+     player.y += player.velocityY;
+ 
+     // Check for platform collision
+     platforms.forEach(platform => {
+         if (player.velocityY > 0 && // Moving down
+             player.x < platform.x + platform.width &&
+             player.x + player.width > platform.x &&
+             player.y + player.height > platform.y &&
+             player.y + player.height < platform.y + platform.height + player.velocityY
+         ) {
+             player.y = platform.y - player.height; // Place player on top of the platform
+             player.velocityY = 0; // Reset vertical velocity
+         }
+     });
+    
     // Calculate height in feet based on totalHeight
     const heightInFeet = totalHeight * 3.28084;
 
