@@ -39,6 +39,7 @@ bounceSound.volume = 0.03; // 3% volume
 bgMusic.loop = true;
 
 function playBackgroundMusic() {
+    bgMusic.currentTime = 0; 
     bgMusic.play().catch(error => {
         console.error("Error playing background music:", error);
     });
@@ -56,6 +57,11 @@ function playDingSound() {
     dingSound.play().catch(error => {
         console.error("Error playing ding sound:", error);
     });
+}
+
+function stopBackgroundMusic() {
+    bgMusic.pause(); 
+    bgMusic.currentTime = 0;
 }
 
 class Star {
@@ -820,6 +826,10 @@ function exitGame() {
         gameLoop = null;
     }
     stopShootingStarTimer();
+    stopBackgroundMusic();
+
+    document.getElementById('game-screen').style.display = 'none'; 
+    document.getElementById('main-menu').style.display = 'block'; 
 }
 
 // star generation function
