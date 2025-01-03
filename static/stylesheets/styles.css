@@ -77,28 +77,31 @@ h2 {
     font-size: 20px;
     border: none;
     border-radius: 25px;
+    
     color: white;
     cursor: pointer;
     transition: transform 0.2s;
     min-width: 200px;
 }
 
+
 .back-button {
     margin-top: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: #FF5722;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    background-color: #FF5722; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 1em; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
 }
 
 .back-button:hover {
-    background-color: #E64A19;
-    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5);
+    background-color: #E64A19; 
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5); 
 }
+
 
 .menu-button:hover {
     transform: scale(1.05);
@@ -159,6 +162,7 @@ h2 {
     }
 }
 
+/* Tutorial Screen Styles */
 .tutorial-content {
     padding: 20px;
     border-radius: 10px;
@@ -195,7 +199,7 @@ h2 {
     text-align: center;
     font-family: monospace;
     font-size: 18px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .description {
@@ -234,7 +238,7 @@ h2 {
     display: block;
     margin: 0 auto;
     padding: 10px 20px;
-    background-color: #FF5722;
+    background-color: #FF5722; 
     color: white;
     border: none;
     border-radius: 5px;
@@ -243,10 +247,11 @@ h2 {
 }
 
 #tutorial-menu button:hover {
-    background-color: #E64A19;
-    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5);
+    background-color: #E64A19; 
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5); 
 }
 
+/* Credits Screen Styles */
 .credits-content {
     padding: 20px;
     border-radius: 10px;
@@ -294,16 +299,83 @@ h2 {
     box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5);
 }
 
+/* Settings Menu Styles */
 #settings-menu {
-    color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white; 
+    border-radius: 10px; 
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); 
 }
 
 #settings-menu h2 {
-    font-size: 2em;
+    font-size: 2em; 
+    margin-bottom: 20px; 
+}
+
+#settings-menu label {
+    display: block; 
+    margin: 10px 0; 
+    font-size: 1.2em;
+}
+
+#settings-menu input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%; 
+    height: 10px; 
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 5px; 
+    outline: none; 
+}
+
+#settings-menu input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 20px; 
+    height: 20px; 
+    background: #2196F3;
+    border-radius: 50%; 
+    cursor: pointer; 
+}
+
+#settings-menu input[type="range"]::-moz-range-thumb {
+    width: 20px; 
+    height: 20px; 
+    background: #2196F3; 
+    border-radius: 50%; 
+    cursor: pointer; 
+}
+
+#settings-menu .menu-button {
+    margin-top: 20px; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    background-color: #2196F3; 
+    color: white; 
+    border: none; 
+    cursor: pointer;
+    font-size: 1em; 
+}
+
+#settings-menu .menu-button:hover {
+    background-color: #1976D2; 
+}
+
+.menu-screen {
+    display: none; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    max-width: 400px; 
+    color: white; 
+    padding: 40px; 
+    border-radius: 10px; 
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); 
+}
+
+#settings-menu h2 {
+    font-size: 2em; 
     margin-bottom: 20px;
 }
+
 
 #settings-menu label {
     display: block;
@@ -312,37 +384,37 @@ h2 {
 }
 
 #settings-menu input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 10px;
+    -webkit-appearance: none; 
+    width: 100%; 
+    height: 10px; 
     background: rgba(255, 255, 255, 0.3);
     border-radius: 5px;
     outline: none;
 }
 
 #settings-menu input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    -webkit-appearance: none; 
     appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #2196F3;
-    border-radius: 50%;
-    cursor: pointer;
+    width: 20px; 
+    height: 20px; 
+    background: #2196F3; 
+    border-radius: 50%; 
+    cursor: pointer; 
 }
 
 #settings-menu input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #2196F3;
+    width: 20px; 
+    height: 20px; 
+    background: #2196F3; 
     border-radius: 50%;
     cursor: pointer;
 }
 
 #settings-menu .menu-button {
-    margin-top: 20px;
+    margin-top: 20px; 
     padding: 10px 20px;
     border-radius: 5px;
-    background-color: #2196F3;
+    background-color: #FF5722;
     color: white;
     border: none;
     cursor: pointer;
@@ -350,5 +422,64 @@ h2 {
 }
 
 #settings-menu .menu-button:hover {
+    background-color: #E64A19; 
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5); 
+} 
+
+#settings-menu .reset-button {
+    margin-top: 20px; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    background-color: #FF5722; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 1em; 
+    transition: background-color 0.3s ease; 
+}
+
+#settings-menu .reset-button:hover {
+    background-color: #E64A19; 
+}
+
+.menu-button {
+    background-color: #2196F3; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    cursor: pointer;
+    font-size: 1em; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.menu-button:hover {
     background-color: #1976D2;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.7), 0 0 20px rgba(33, 150, 243, 0.5); 
+}
+
+.reset-button {
+    margin-top: 20px; 
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #FF5722;
+    color: white;
+    border: none; 
+    cursor: pointer;
+    font-size: 1em; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.reset-button:hover {
+    background-color: #E64A19; 
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5);
+}
+
+.back {
+    background-color: #FF5722;
+}
+
+.back:hover {
+    background-color: #E64A19;
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.7), 0 0 20px rgba(255, 87, 34, 0.5); 
 }
