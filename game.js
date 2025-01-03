@@ -410,6 +410,11 @@ function stopGame() {
 }
 
 function initGame() {
+
+     // Get canvas and context
+     canvas = document.getElementById('gameCanvas');
+     ctx = canvas.getContext('2d');
+
     // Reset game variables
     gameOver = false;
     score = 0;
