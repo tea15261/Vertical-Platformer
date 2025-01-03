@@ -13,7 +13,7 @@ let countingDown = false;
 let countdown = 3;
 let lastTime = 0;
 let activeKeys = new Set();
-let touchedPlatforms = new Set(); // Track platforms we've scored from
+let touchedPlatforms = new Set();
 let stars = [];
 const STARS_START = 25000;  // Start seeing stars at 25,000 feet
 const STARS_FULL = 70000;   // Maximum star density at 70,000 feet
@@ -35,36 +35,29 @@ const bounceSound = new Audio('audio/bounce.wav');
 const dingSound = new Audio('audio/ding.wav');
 const bgMusic = new Audio('audio/bg.wav');
 
-// Set the volume for the bounce sound to 3%
 bounceSound.volume = 0.03; // 3% volume
-
-// Set background music to loop
 bgMusic.loop = true;
 
-// Function to start background music
 function playBackgroundMusic() {
     bgMusic.play().catch(error => {
         console.error("Error playing background music:", error);
     });
 }
 
-// Function to play the bounce sound
 function playBounceSound() {
-    bounceSound.currentTime = 0; // Reset to start
+    bounceSound.currentTime = 0; 
     bounceSound.play().catch(error => {
         console.error("Error playing bounce sound:", error);
     });
 }
 
-// Function to play the ding sound
 function playDingSound() {
-    dingSound.currentTime = 0; // Reset to start
+    dingSound.currentTime = 0; 
     dingSound.play().catch(error => {
         console.error("Error playing ding sound:", error);
     });
 }
 
-// Add star class
 class Star {
     constructor(x, y, size) {
         this.x = x;
@@ -75,7 +68,7 @@ class Star {
         this.pulseSpeed = Math.random() * 0.005 + 0.002;
         this.pulseOffset = Math.random() * Math.PI * 2;
         this.timeOffset = Math.random() * 1000;
-        this.color = this.generateStarColor(); // Random star color
+        this.color = this.generateStarColor();
     }
 
     generateStarColor() {
@@ -144,7 +137,6 @@ class Star {
     }
 }
 
-// Add ShootingStar class
 class ShootingStar {
     constructor() {
         this.reset();
@@ -155,7 +147,7 @@ class ShootingStar {
             this.y = -20;
         } else {
             this.x = canvas.width + 20;
-            this.y = Math.random() * (canvas.height / 2); // Only in top half
+            this.y = Math.random() * (canvas.height);
         }
     }
 
@@ -163,7 +155,7 @@ class ShootingStar {
         // Angle between -30 and -60 degrees (converted to radians)
         this.angle = (-30 - Math.random() * 30) * Math.PI / 180;
         this.speed = 15 + Math.random() * 25;
-        this.length = 150 + Math.random() * 200; // Increased length for longer streaks
+        this.length = 150 + Math.random() * 200;
         this.opacity = 0;
         this.fadeInSpeed = 0.05;
         this.fadeOutSpeed = 0.02;
@@ -173,7 +165,6 @@ class ShootingStar {
     update() {
         if (!this.active) return;
 
-        // Move the shooting star
         this.x += Math.cos(this.angle) * this.speed;
         this.y += Math.sin(this.angle) * this.speed;
 
@@ -194,10 +185,8 @@ class ShootingStar {
     draw(ctx) {
         if (!this.active || this.opacity <= 0) return;
 
-        // Save context state
         ctx.save();
         
-        // Set up gradient for the tail
         const gradient = ctx.createLinearGradient(
             this.x, this.y,
             this.x - Math.cos(this.angle) * this.length,
@@ -236,7 +225,6 @@ class ShootingStar {
 }
 
 function generatePlatforms() {
-    // Clear existing platforms
     platforms = [];
     
     // Add starting platform
@@ -263,7 +251,6 @@ function generatePlatforms() {
 function generateCloud() {
     const heightInFeet = totalHeight * 3.28084;
     
-    // If above CLOUD_FADE_END, return an off-screen cloud
     if (heightInFeet >= CLOUD_FADE_END) {
         return {
             x: 0,
@@ -316,7 +303,6 @@ function getCloudDensity(heightInFeet) {
     } else if (heightInFeet < CLOUD_FADE_START) {
         return 1; // Full density below 20,000 feet
     } else {
-        // Linear interpolation between 1 and 0
         return 1 - ((heightInFeet - CLOUD_FADE_START) / (CLOUD_FADE_END - CLOUD_FADE_START));
     }
 }
@@ -413,12 +399,12 @@ function getSkyGradient(height) {
     
     // Define height ranges for transitions
     const ranges = {
-        ground: { start: 0, end: 3000 },
-        middle: { start: 3000, end: 10000 },
-        high: { start: 10000, end: 25000 },
-        space: { start: 25000, end: 45000 },
-        outerSpace: { start: 45000, end: 80000 },
-        deepSpace: { start: 80000, end: 100000 }
+        ground: { start: 0, end: 3_000 },
+        middle: { start: 3_000, end: 10_000 },
+        high: { start: 10_000, end: 25_000 },
+        space: { start: 25_000, end: 45_000 },
+        outerSpace: { start: 45_000, end: 80_000 },
+        deepSpace: { start: 80_000, end: 100_000 }
     };
     
     let topColor, bottomColor;
@@ -467,7 +453,6 @@ function getSkyGradient(height) {
 }
 
 function initGame() {
-    // Get canvas and context
     canvas = document.getElementById('gameCanvas');
     if (!canvas) {
         console.error('Canvas not found');
@@ -480,7 +465,7 @@ function initGame() {
         return;
     }
 
-    console.log('Game initializing...'); // Debug log
+    console.log('Game initializing...');
 
     // Initialize game state
     gameOver = false;
@@ -513,7 +498,6 @@ function initGame() {
         clouds.push(generateCloud());
     }
 
-    // Force initial draw
     draw();
 
     // Start game loop
@@ -529,13 +513,13 @@ function initGame() {
     // Clear touched platforms
     touchedPlatforms.clear();
 
-    console.log('Game initialized!'); // Debug log
+    console.log('Game initialized!');
 
     stars = [];
     generateInitialStars();
     shootingStars = [new ShootingStar()];
     startShootingStarTimer();
-    playBackgroundMusic(); // Start background music
+    playBackgroundMusic();
 }
 
 function handleKeyDown(e) {
@@ -573,26 +557,20 @@ function update() {
         player.velocityX = 0;
     }
 
-    // Apply gravity
     player.velocityY += player.gravity;
     
-    // Update player position
     player.x += player.velocityX;
     player.y += player.velocityY;
 
-    // Screen wrapping
     if (player.x + player.width < 0) {
         player.x = canvas.width;
     } else if (player.x > canvas.width) {
         player.x = -player.width;
     }
 
-    // Move clouds horizontally independently (do this before camera movement)
     clouds.forEach(cloud => {
-        // Update X position based on cloud's speed
         cloud.x += cloud.speed;
         
-        // Wrap clouds horizontally
         if (cloud.x > canvas.width + cloud.width) {
             cloud.x = -cloud.width;
         } else if (cloud.x < -cloud.width) {
@@ -600,7 +578,6 @@ function update() {
         }
     });
 
-    // Camera and platform movement
     if (player.y < canvas.height / 2) {
         const cameraDiff = canvas.height / 2 - player.y;
         totalHeight += cameraDiff;
@@ -610,11 +587,9 @@ function update() {
             platform.y += cameraDiff;
         });
 
-        // Only move clouds vertically with camera
         clouds.forEach(cloud => {
             const heightInFeet = totalHeight * 3.28084;
             
-            // If we're above CLOUD_FADE_END, move all clouds off screen
             if (heightInFeet >= CLOUD_FADE_END) {
                 cloud.y = -1000;
                 return;
@@ -622,7 +597,6 @@ function update() {
 
             cloud.y += cameraDiff * (1 + cloud.layer * 0.2);
             
-            // Reset clouds that move below screen
             if (cloud.y > canvas.height + 100) {
                 const cloudDensity = getCloudDensity(heightInFeet);
                 
@@ -630,7 +604,6 @@ function update() {
                     cloud.y = -cloud.height;
                     cloud.x = Math.random() * canvas.width;
                     
-                    // Update cloud size based on new height
                     const baseWidth = Math.random() * 120 + 60;
                     const baseHeight = Math.random() * 60 + 30;
                     cloud.width = baseWidth * cloudDensity;
@@ -639,12 +612,11 @@ function update() {
                     const greyShade = Math.floor(Math.random() * 20) + 80;
                     cloud.color = `rgba(${greyShade}%, ${greyShade}%, ${greyShade}%, ${cloudDensity * 0.8})`;
                 } else {
-                    cloud.y = -1000; // Move cloud off screen
+                    cloud.y = -1000; 
                 }
             }
         });
 
-        // Remove and generate platforms
         platforms = platforms.filter(platform => platform.y < canvas.height + 100);
         while (platforms.length < 7) {
             platforms.push({
@@ -655,11 +627,9 @@ function update() {
             });
         }
 
-        // Move stars with camera
         stars.forEach(star => {
             star.y += cameraDiff;
             
-            // Wrap stars vertically
             if (star.y > canvas.height + star.size) {
                 star.y = -star.size;
                 star.x = Math.random() * canvas.width;
@@ -670,9 +640,8 @@ function update() {
         });
     }
 
-    // Update platform collision with score tracking
     platforms.forEach(platform => {
-        if (player.velocityY > 0 && // Moving down
+        if (player.velocityY > 0 && 
             player.x < platform.x + platform.width &&
             player.x + player.width > platform.x &&
             player.y + player.height > platform.y &&
@@ -681,16 +650,13 @@ function update() {
             player.y = platform.y - player.height;
             player.velocityY = player.jumpForce;
             
-            // Play bounce sound
             playBounceSound();
 
-            // Only increment score if we haven't touched this platform
             const platformId = `${platform.x},${platform.y}`;
             if (!touchedPlatforms.has(platformId)) {
                 score++;
                 touchedPlatforms.add(platformId);
 
-                // Play ding sound if score is a multiple of 10
                 if (score % 10 === 0) {
                     playDingSound();
                 }
@@ -705,14 +671,11 @@ function update() {
             highScore = score;
             localStorage.setItem('endlessHighScore', highScore.toString());
         }
-        draw(); // Make sure to draw final frame
-        return; // Stop the game loop
+        draw();
+        return;
     }
 
-    // Update shooting stars
     shootingStars.forEach(star => star.update());
-
-    // Filter out inactive shooting stars
     shootingStars = shootingStars.filter(star => star.active);
 
     draw();
@@ -723,14 +686,11 @@ function update() {
 }
 
 function draw() {
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw sky gradient
     ctx.fillStyle = getSkyGradient(totalHeight);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw stars with enhanced glow
     const heightInFeet = totalHeight * 3.28084;
     const starDensity = getStarDensity(heightInFeet);
     
@@ -738,19 +698,16 @@ function draw() {
         const visibleStars = Math.floor(stars.length * starDensity);
         const currentTime = Date.now();
         
-        // Enable glow effect
         ctx.globalCompositeOperation = 'lighter';
         
         for (let i = 0; i < visibleStars; i++) {
             stars[i].update(currentTime);
             stars[i].draw(ctx);
         }
-        
-        // Reset composite operation
+     
         ctx.globalCompositeOperation = 'source-over';
     }
 
-    // Draw clouds
     const cloudDensity = getCloudDensity(heightInFeet);
     
     for (let layer = 0; layer < 3; layer++) {
@@ -761,20 +718,16 @@ function draw() {
         });
     }
 
-    // Draw platforms
     ctx.fillStyle = 'rgba(74, 189, 74, 0.8)';
     platforms.forEach(platform => {
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
     
-    // Draw player glow effect
     drawPlayerGlow(player.x, player.y, player.width, player.height);
 
-    // Draw player
     ctx.fillStyle = '#2196F3';
     ctx.fillRect(player.x, player.y, player.width, player.height);
 
-    // Draw UI
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 4;
     ctx.fillStyle = 'white';
@@ -785,7 +738,6 @@ function draw() {
     ctx.fillText(`Height: ${Math.floor(totalHeight * 3.28084).toLocaleString()} ft`, 10, 90);
     ctx.shadowBlur = 0;
 
-    // Draw pause screen
     if (isPaused) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -803,7 +755,6 @@ function draw() {
         }
     }
 
-    // Draw game over screen
     if (gameOver) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -819,7 +770,6 @@ function draw() {
         ctx.fillText('Press R to restart', canvas.width/2, canvas.height/2 + 80);
     }
 
-    // Draw shooting stars after regular stars but before clouds
     if (heightInFeet > STARS_START) {
         ctx.globalCompositeOperation = 'lighter';
         shootingStars.forEach(star => star.draw(ctx));
@@ -858,17 +808,13 @@ function togglePause() {
 }
 
 function exitGame() {
-    // Remove event listeners
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('keyup', handleKeyUp);
     
-    // Clear active keys
     activeKeys.clear();
     
-    // Clear touched platforms
     touchedPlatforms.clear();
     
-    // Stop game loop
     if (gameLoop) {
         cancelAnimationFrame(gameLoop);
         gameLoop = null;
@@ -876,19 +822,19 @@ function exitGame() {
     stopShootingStarTimer();
 }
 
-// Add star generation function
+// star generation function
 function generateInitialStars() {
     const maxStars = 200;
     for (let i = 0; i < maxStars; i++) {
         stars.push(new Star(
             Math.random() * canvas.width,
             Math.random() * canvas.height,
-            Math.random() * 2 + 0.5  // Slightly larger size range
+            Math.random() * 2 + 0.5  
         ));
     }
 }
 
-// Add star density calculation
+// star density calculation
 function getStarDensity(heightInFeet) {
     if (heightInFeet < STARS_START) {
         return 0;
@@ -898,99 +844,89 @@ function getStarDensity(heightInFeet) {
     return (heightInFeet - STARS_START) / (STARS_FULL - STARS_START);
 }
 
-// Function to start generating shooting stars
+//generating shooting stars
 function startShootingStarTimer() {
     shootingStarTimer = setInterval(() => {
         const heightInFeet = totalHeight * 3.28084;
-        if (heightInFeet > STARS_START) { // Only generate stars if above 25,000 feet
-            if (Math.random() < SHOOTING_STAR_FREQUENCY) { // 10% chance to create a new shooting star
+        if (heightInFeet > STARS_START) { 
+            if (Math.random() < SHOOTING_STAR_FREQUENCY) {
                 if (shootingStars.length < 10) { // Allow up to 10 shooting stars
                     shootingStars.push(new ShootingStar());
                 }
             }
         }
-    }, 1000); // Check every 1000 milliseconds (1 second)
+    }, 1000); 
 }
 
-// Function to stop generating shooting stars
 function stopShootingStarTimer() {
     clearInterval(shootingStarTimer);
 }
 
-// Function to draw the player's square glow effect
+// draw the player's square glow effect
 function drawPlayerGlow(x, y, width, height) {
     const glowSize = 5; // Adjust the size of the glow to be smaller (e.g., 5 pixels)
 
     // Set shadow properties for the glow effect
     ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Color of the glow
-    ctx.shadowBlur = glowSize; // Size of the glow
-    ctx.shadowOffsetX = 0; // No offset
-    ctx.shadowOffsetY = 0; // No offset
+    ctx.shadowBlur = glowSize; 
+    ctx.shadowOffsetX = 0; 
+    ctx.shadowOffsetY = 0; 
 
-    // Draw the glow rectangle
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; // Optional: fill color for the glow
-    ctx.fillRect(x - glowSize, y - glowSize, width + glowSize * 2, height + glowSize * 2); // Draw the glow rectangle
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; 
+    ctx.fillRect(x - glowSize, y - glowSize, width + glowSize * 2, height + glowSize * 2); 
 
-    // Reset shadow properties to avoid affecting other drawings
-    ctx.shadowColor = 'transparent'; // Reset shadow color
+    ctx.shadowColor = 'transparent'; 
 }
 
-// Function to apply settings
 function applySettings() {
     const musicVolume = document.getElementById('music-volume').value / 100;
     const bounceVolume = document.getElementById('bounce-volume').value / 100;
     const dingVolume = document.getElementById('ding-volume').value / 100;
 
-    // Set audio volumes
     bgMusic.volume = musicVolume;
     bounceSound.volume = bounceVolume;
     dingSound.volume = dingVolume;
 
-    // Save settings to local storage
     localStorage.setItem('musicVolume', musicVolume);
     localStorage.setItem('bounceVolume', bounceVolume);
     localStorage.setItem('dingVolume', dingVolume);
 }
 
-// Function to reset settings to default
+// reset settings to default
 function resetSettings() {
     document.getElementById('music-volume').value = 50; // Default 50%
     document.getElementById('bounce-volume').value = 25; // Default 25%
     document.getElementById('ding-volume').value = 100; // Default 100%
-    applySettings(); // Apply default settings
+    applySettings(); 
 }
 
-// Call applySettings when the settings menu is opened
 function showSettingsMenu() {
-    // Load settings from local storage
     const savedMusicVolume = localStorage.getItem('musicVolume');
     const savedBounceVolume = localStorage.getItem('bounceVolume');
     const savedDingVolume = localStorage.getItem('dingVolume');
 
-    // Apply saved settings if they exist
     if (savedMusicVolume !== null) {
-        document.getElementById('music-volume').value = savedMusicVolume * 100; // Convert back to percentage
+        document.getElementById('music-volume').value = savedMusicVolume * 100; 
     } else {
-        document.getElementById('music-volume').value = 50; // Default value
+        document.getElementById('music-volume').value = 50; 
     }
 
     if (savedBounceVolume !== null) {
-        document.getElementById('bounce-volume').value = savedBounceVolume * 100; // Convert back to percentage
+        document.getElementById('bounce-volume').value = savedBounceVolume * 100;
     } else {
-        document.getElementById('bounce-volume').value = 25; // Default value
+        document.getElementById('bounce-volume').value = 25; 
     }
 
     if (savedDingVolume !== null) {
-        document.getElementById('ding-volume').value = savedDingVolume * 100; // Convert back to percentage
+        document.getElementById('ding-volume').value = savedDingVolume * 100; 
     } else {
-        document.getElementById('ding-volume').value = 100; // Default value
+        document.getElementById('ding-volume').value = 100; 
     }
 
-    applySettings(); // Apply current settings when opening the menu
+    applySettings(); 
     showScreen('settings-menu');
 }
 
-// Add event listeners for volume sliders
 document.getElementById('music-volume').addEventListener('input', applySettings);
 document.getElementById('bounce-volume').addEventListener('input', applySettings);
 document.getElementById('ding-volume').addEventListener('input', applySettings);
