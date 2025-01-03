@@ -570,6 +570,15 @@ function update() {
      // Apply gravity
      player.velocityY += player.gravity;
     
+    // Update player position based on active keys
+    if (activeKeys.has('left')) {
+        player.velocityX = -player.speed; // Move left
+    } else if (activeKeys.has('right')) {
+        player.velocityX = player.speed; // Move right
+    } else {
+        player.velocityX = 0; // Stop moving if no key is pressed
+    }
+     
      // Update player position
      player.x += player.velocityX;
      player.y += player.velocityY;
@@ -668,6 +677,24 @@ function handleKeyDown(e) {
 function handleKeyUp(e) {
     activeKeys.delete(e.key);
 }
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') {
+        activeKeys.add('left'); // Add left key to active keys
+    }
+    if (e.key === 'ArrowRight') {
+        activeKeys.add('right'); // Add right key to active keys
+    }
+});
+
+document.addEventListener('keyup', function(e) {
+    if (e.key === 'ArrowLeft') {
+        activeKeys.delete('left'); // Remove left key from active keys
+    }
+    if (e.key === 'ArrowRight') {
+        activeKeys.delete('right'); // Remove right key from active keys
+    }
+});
 
 function exitGame() {
     document.removeEventListener('keydown', handleKeyDown);
