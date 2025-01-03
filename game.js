@@ -945,6 +945,11 @@ function applySettings() {
     bgMusic.volume = musicVolume;
     bounceSound.volume = bounceVolume;
     dingSound.volume = dingVolume;
+
+    // Save settings to local storage
+    localStorage.setItem('musicVolume', musicVolume);
+    localStorage.setItem('bounceVolume', bounceVolume);
+    localStorage.setItem('dingVolume', dingVolume);
 }
 
 // Function to reset settings to default
@@ -957,6 +962,30 @@ function resetSettings() {
 
 // Call applySettings when the settings menu is opened
 function showSettingsMenu() {
+    // Load settings from local storage
+    const savedMusicVolume = localStorage.getItem('musicVolume');
+    const savedBounceVolume = localStorage.getItem('bounceVolume');
+    const savedDingVolume = localStorage.getItem('dingVolume');
+
+    // Apply saved settings if they exist
+    if (savedMusicVolume !== null) {
+        document.getElementById('music-volume').value = savedMusicVolume * 100; // Convert back to percentage
+    } else {
+        document.getElementById('music-volume').value = 50; // Default value
+    }
+
+    if (savedBounceVolume !== null) {
+        document.getElementById('bounce-volume').value = savedBounceVolume * 100; // Convert back to percentage
+    } else {
+        document.getElementById('bounce-volume').value = 25; // Default value
+    }
+
+    if (savedDingVolume !== null) {
+        document.getElementById('ding-volume').value = savedDingVolume * 100; // Convert back to percentage
+    } else {
+        document.getElementById('ding-volume').value = 100; // Default value
+    }
+
     applySettings(); // Apply current settings when opening the menu
     showScreen('settings-menu');
 }
