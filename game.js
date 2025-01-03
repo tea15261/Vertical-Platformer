@@ -1,4 +1,4 @@
-// game varibles
+// Game variables
 let canvas, ctx;
 let gameLoop;
 let player;
@@ -11,23 +11,23 @@ let highScore = parseInt(localStorage.getItem('endlessHighScore')) || 0;
 let isPaused = false;
 let countingDown = false;
 let countdown = 3;
-let activeKeys = new Set();
-let touchedPlatforms = new Set(); // track platforms we've scored from
 let lastTime = 0;
+let activeKeys = new Set();
+let touchedPlatforms = new Set(); // Track platforms we've scored from
 let stars = [];
-const STARS_START = 30000;  // start seeing stars at 30,000 feet
-const STARS_FULL = 70000;   // maximum star density at 70,000 feet
-let shootingStars = [];
+const STARS_START = 30000;  // Start seeing stars at 30,000 feet
+const STARS_FULL = 70000;   // Maximum star density at 70,000 feet
 
-// platform properties
+// Platform properties
 const platformWidth = 80;
 const platformHeight = 15;
 const platformGap = 100;
 
-// cloud properties
+// Cloud properties
 const CLOUD_FADE_START = 20000;
 const CLOUD_FADE_END = 60000;
 
+// Add star class
 class Star {
     constructor(x, y, size) {
         this.x = x;
@@ -107,93 +107,8 @@ class Star {
     }
 }
 
-class ShootingStar {
-    constructor() {
-        this.reset();
-        const startFromTop = Math.random() > 0.5;
-        if (startFromTop) {
-            this.x = Math.random() * canvas.width;
-            this.y = -20;
-        } else {
-            this.x = canvas.width + 20;
-            this.y = Math.random() * (canvas.height / 2);
-        }
-    }
-
-    reset() {
-        // Angle between -30 and -60 degrees (converted to radians)
-        this.angle = (-30 - Math.random() * 30) * Math.PI / 180;
-        this.speed = 15 + Math.random() * 25;
-        this.length = 100 + Math.random() * 150;
-        this.opacity = 0;
-        this.fadeInSpeed = 0.05;
-        this.fadeOutSpeed = 0.02;
-        this.active = true;
-    }
-
-    update() {
-        if (!this.active) return;
-
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-
-        if (this.opacity < 1) {
-            this.opacity += this.fadeInSpeed;
-        }
-
-        // Start fading out when near edge
-        if (this.x < 0 || this.y > canvas.height) {
-            this.opacity -= this.fadeOutSpeed;
-            if (this.opacity <= 0) {
-                this.active = false;
-            }
-        }
-    }
-
-    draw(ctx) {
-        if (!this.active || this.opacity <= 0) return;
-
-        ctx.save();
-        
-        // Set up gradient for the tail
-        const gradient = ctx.createLinearGradient(
-            this.x, this.y,
-            this.x - Math.cos(this.angle) * this.length,
-            this.y - Math.sin(this.angle) * this.length
-        );
-        
-        // Main streak
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
-        gradient.addColorStop(0.1, `rgba(255, 255, 255, ${this.opacity * 0.8})`);
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-        // Draw the main streak
-        ctx.beginPath();
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(
-            this.x - Math.cos(this.angle) * this.length,
-            this.y - Math.sin(this.angle) * this.length
-        );
-        ctx.stroke();
-
-        // Add a glowing effect
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity * 0.3})`;
-        ctx.lineWidth = 4;
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(
-            this.x - Math.cos(this.angle) * (this.length * 0.7),
-            this.y - Math.sin(this.angle) * (this.length * 0.7)
-        );
-        ctx.stroke();
-
-        ctx.restore();
-    }
-}
-
 function generatePlatforms() {
+    // Clear existing platforms
     platforms = [];
     
     // Add starting platform
@@ -204,7 +119,7 @@ function generatePlatforms() {
         height: platformHeight
     });
 
-    // Generate platforms
+    // Generate initial platforms with random positions
     let y = canvas.height - 150;
     for (let i = 0; i < 6; i++) {
         platforms.push({
@@ -306,23 +221,31 @@ function drawCloud(cloud) {
     }
 }
 
-// Update sky gradient with smooth transitions
+// Update sky colors with new space gradients
 const skyColors = {
     ground: {
-        top: '#87CEEB',
-        bottom: '#B0E2FF'
+        top: '#87CEEB',    // Light blue
+        bottom: '#B0E2FF'  // Lighter blue
     },
     middle: {
-        top: '#4A90E2',
-        bottom: '#76B4FF'
+        top: '#4A90E2',    // Medium blue
+        bottom: '#76B4FF'  // Light blue
     },
     high: {
-        top: '#1a1a4c',
-        bottom: '#2d2d7a'
+        top: '#1a1a4c',    // Deep blue/purple
+        bottom: '#2d2d7a'  // Lighter deep blue
     },
     space: {
-        top: '#0d0d2b',
-        bottom: '#1a1a3c'
+        top: '#0d0d2b',    // Very dark blue
+        bottom: '#1a1a3c'  // Dark blue
+    },
+    outerSpace: {
+        top: '#000000',    // Pure black
+        bottom: '#1a1a4c'  // Deep blue (atmosphere glow)
+    },
+    deepSpace: {
+        top: '#000000',    // Pure black
+        bottom: '#000000'  // Pure black
     }
 };
 
@@ -365,34 +288,48 @@ function getSkyGradient(height) {
         ground: { start: 0, end: 3000 },
         middle: { start: 3000, end: 10000 },
         high: { start: 10000, end: 25000 },
-        space: { start: 25000, end: 35000 }
+        space: { start: 25000, end: 45000 },
+        outerSpace: { start: 45000, end: 80000 },
+        deepSpace: { start: 80000, end: 100000 }
     };
     
     let topColor, bottomColor;
     
     if (heightInFeet <= ranges.ground.end) {
-
         // Ground level
         topColor = skyColors.ground.top;
         bottomColor = skyColors.ground.bottom;
-    } else if (heightInFeet <= ranges.middle.end) {
-
+    } 
+    else if (heightInFeet <= ranges.middle.end) {
         // Ground to middle transition
         const factor = (heightInFeet - ranges.ground.end) / (ranges.middle.end - ranges.ground.end);
         topColor = interpolateColor(skyColors.ground.top, skyColors.middle.top, factor);
         bottomColor = interpolateColor(skyColors.ground.bottom, skyColors.middle.bottom, factor);
-    } else if (heightInFeet <= ranges.high.end) {
-
+    } 
+    else if (heightInFeet <= ranges.high.end) {
         // Middle to high transition
         const factor = (heightInFeet - ranges.middle.end) / (ranges.high.end - ranges.middle.end);
         topColor = interpolateColor(skyColors.middle.top, skyColors.high.top, factor);
         bottomColor = interpolateColor(skyColors.middle.bottom, skyColors.high.bottom, factor);
-    } else {
-
+    } 
+    else if (heightInFeet <= ranges.space.end) {
         // High to space transition
-        const factor = Math.min((heightInFeet - ranges.high.end) / (ranges.space.end - ranges.high.end), 1);
+        const factor = (heightInFeet - ranges.high.end) / (ranges.space.end - ranges.high.end);
         topColor = interpolateColor(skyColors.high.top, skyColors.space.top, factor);
         bottomColor = interpolateColor(skyColors.high.bottom, skyColors.space.bottom, factor);
+    }
+    else if (heightInFeet <= ranges.outerSpace.end) {
+        // Space to outer space transition (starting to see pure black at top)
+        const factor = (heightInFeet - ranges.space.end) / (ranges.outerSpace.end - ranges.space.end);
+        topColor = interpolateColor(skyColors.space.top, skyColors.outerSpace.top, factor);
+        bottomColor = interpolateColor(skyColors.space.bottom, skyColors.outerSpace.bottom, factor);
+    }
+    else {
+        // Outer space to deep space transition (fading to complete black)
+        const factor = Math.min((heightInFeet - ranges.outerSpace.end) / 
+                              (ranges.deepSpace.end - ranges.outerSpace.end), 1);
+        topColor = skyColors.deepSpace.top; // Always pure black
+        bottomColor = interpolateColor(skyColors.outerSpace.bottom, skyColors.deepSpace.bottom, factor);
     }
     
     gradient.addColorStop(0, topColor);
@@ -401,29 +338,33 @@ function getSkyGradient(height) {
     return gradient;
 }
 
-// Add stop game function if it doesn't exist
-function stopGame() {
-    if (gameLoop) {
-        cancelAnimationFrame(gameLoop);
-        gameLoop = null;
-    }
-}
-
 function initGame() {
+    // Get canvas and context
+    canvas = document.getElementById('gameCanvas');
+    if (!canvas) {
+        console.error('Canvas not found');
+        return;
+    }
+    
+    ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Could not get canvas context');
+        return;
+    }
 
-     // Get canvas and context
-     canvas = document.getElementById('gameCanvas');
-     ctx = canvas.getContext('2d');
+    console.log('Game initializing...'); // Debug log
 
-    // Reset game variables
+    // Initialize game state
     gameOver = false;
+    isPaused = false;
+    countingDown = false;
+    countdown = 3;
     score = 0;
     totalHeight = 0;
-    isPaused = false;
-
+    
     // Initialize player
     player = {
-        x: canvas.width / 2 - 20, // Center the player on the platform
+        x: canvas.width / 2 - 20,
         y: canvas.height - 100,
         width: 40,
         height: 40,
@@ -434,29 +375,217 @@ function initGame() {
         gravity: 0.5
     };
 
+    // Clear and generate platforms
+    platforms = [];
     generatePlatforms();
-
-    // Initialize clouds
+    
+    // Generate clouds
     clouds = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 15; i++) {
         clouds.push(generateCloud());
     }
 
-    // Initialize shooting stars
-    shootingStars = [new ShootingStar()];
+    // Force initial draw
+    draw();
 
-    // Start the game loop
+    // Start game loop
+    if (gameLoop) {
+        cancelAnimationFrame(gameLoop);
+    }
     gameLoop = requestAnimationFrame(update);
+
+    // Set up keyboard controls
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    
+    // Clear touched platforms
+    touchedPlatforms.clear();
+
+    console.log('Game initialized!'); // Debug log
+
+    stars = [];
+    generateInitialStars();
+}
+
+function handleKeyDown(e) {
+    activeKeys.add(e.key);
+}
+
+function handleKeyUp(e) {
+    activeKeys.delete(e.key);
+}
+
+function update() {
+    if (isPaused) {
+        if (countingDown) {
+            const currentTime = Date.now();
+            if (currentTime - lastTime >= 1000) {
+                countdown--;
+                lastTime = currentTime;
+                if (countdown <= 0) {
+                    countingDown = false;
+                    isPaused = false;
+                }
+            }
+        }
+        draw();
+        gameLoop = requestAnimationFrame(update);
+        return;
+    }
+
+    // Handle keyboard input
+    if (activeKeys.has('ArrowLeft')) {
+        player.velocityX = -player.speed;
+    } else if (activeKeys.has('ArrowRight')) {
+        player.velocityX = player.speed;
+    } else {
+        player.velocityX = 0;
+    }
+
+    // Apply gravity
+    player.velocityY += player.gravity;
+    
+    // Update player position
+    player.x += player.velocityX;
+    player.y += player.velocityY;
+
+    // Screen wrapping
+    if (player.x + player.width < 0) {
+        player.x = canvas.width;
+    } else if (player.x > canvas.width) {
+        player.x = -player.width;
+    }
+
+    // Move clouds horizontally independently (do this before camera movement)
+    clouds.forEach(cloud => {
+        // Update X position based on cloud's speed
+        cloud.x += cloud.speed;
+        
+        // Wrap clouds horizontally
+        if (cloud.x > canvas.width + cloud.width) {
+            cloud.x = -cloud.width;
+        } else if (cloud.x < -cloud.width) {
+            cloud.x = canvas.width + cloud.width;
+        }
+    });
+
+    // Camera and platform movement
+    if (player.y < canvas.height / 2) {
+        const cameraDiff = canvas.height / 2 - player.y;
+        totalHeight += cameraDiff;
+        
+        player.y += cameraDiff;
+        platforms.forEach(platform => {
+            platform.y += cameraDiff;
+        });
+
+        // Only move clouds vertically with camera
+        clouds.forEach(cloud => {
+            const heightInFeet = totalHeight * 3.28084;
+            
+            // If we're above CLOUD_FADE_END, move all clouds off screen
+            if (heightInFeet >= CLOUD_FADE_END) {
+                cloud.y = -1000;
+                return;
+            }
+
+            cloud.y += cameraDiff * (1 + cloud.layer * 0.2);
+            
+            // Reset clouds that move below screen
+            if (cloud.y > canvas.height + 100) {
+                const cloudDensity = getCloudDensity(heightInFeet);
+                
+                if (cloudDensity > 0 && Math.random() < cloudDensity) {
+                    cloud.y = -cloud.height;
+                    cloud.x = Math.random() * canvas.width;
+                    
+                    // Update cloud size based on new height
+                    const baseWidth = Math.random() * 120 + 60;
+                    const baseHeight = Math.random() * 60 + 30;
+                    cloud.width = baseWidth * cloudDensity;
+                    cloud.height = baseHeight * cloudDensity;
+                    
+                    const greyShade = Math.floor(Math.random() * 20) + 80;
+                    cloud.color = `rgba(${greyShade}%, ${greyShade}%, ${greyShade}%, ${cloudDensity * 0.8})`;
+                } else {
+                    cloud.y = -1000; // Move cloud off screen
+                }
+            }
+        });
+
+        // Remove and generate platforms
+        platforms = platforms.filter(platform => platform.y < canvas.height + 100);
+        while (platforms.length < 7) {
+            platforms.push({
+                x: Math.random() * (canvas.width - platformWidth),
+                y: platforms[platforms.length - 1].y - platformGap,
+                width: platformWidth,
+                height: platformHeight
+            });
+        }
+
+        // Move stars with camera
+        stars.forEach(star => {
+            star.y += cameraDiff;
+            
+            // Wrap stars vertically
+            if (star.y > canvas.height + star.size) {
+                star.y = -star.size;
+                star.x = Math.random() * canvas.width;
+            } else if (star.y < -star.size) {
+                star.y = canvas.height + star.size;
+                star.x = Math.random() * canvas.width;
+            }
+        });
+    }
+
+    // Update platform collision with score tracking
+    platforms.forEach(platform => {
+        if (player.velocityY > 0 && // Moving down
+            player.x < platform.x + platform.width &&
+            player.x + player.width > platform.x &&
+            player.y + player.height > platform.y &&
+            player.y + player.height < platform.y + platform.height + player.velocityY
+        ) {
+            player.y = platform.y - player.height;
+            player.velocityY = player.jumpForce;
+            
+            // Only increment score if we haven't touched this platform
+            const platformId = `${platform.x},${platform.y}`;
+            if (!touchedPlatforms.has(platformId)) {
+                score++;
+                touchedPlatforms.add(platformId);
+            }
+        }
+    });
+
+    // Game over check - if player falls below screen
+    if (player.y > canvas.height) {
+        gameOver = true;
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('endlessHighScore', highScore.toString());
+        }
+        draw(); // Make sure to draw final frame
+        return; // Stop the game loop
+    }
+
+    draw();
+    
+    if (!gameOver) {
+        gameLoop = requestAnimationFrame(update);
+    }
 }
 
 function draw() {
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw sky gradient
     ctx.fillStyle = getSkyGradient(totalHeight);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw stars with glow
+    // Draw stars with enhanced glow
     const heightInFeet = totalHeight * 3.28084;
     const starDensity = getStarDensity(heightInFeet);
     
@@ -472,13 +601,7 @@ function draw() {
             stars[i].draw(ctx);
         }
         
-        ctx.globalCompositeOperation = 'source-over';
-    }
-
-    // Draw shooting stars after regular stars but before clouds
-    if (heightInFeet > STARS_START) {
-        ctx.globalCompositeOperation = 'lighter';
-        shootingStars.forEach(star => star.draw(ctx));
+        // Reset composite operation
         ctx.globalCompositeOperation = 'source-over';
     }
 
@@ -549,144 +672,38 @@ function draw() {
     }
 }
 
-function update() {
-    if (isPaused) {
-        // ... existing pause code ...
-        return;
-    }
-
-    // Apply gravity
-    player.velocityY += player.gravity;
-
-    // Update player position based on active keys
-    if (activeKeys.has('left')) {
-        player.velocityX = -player.speed; // Move left
-    } else if (activeKeys.has('right')) {
-        player.velocityX = player.speed; // Move right
-    } else {
-        player.velocityX = 0; // Stop moving if no key is pressed
-    }
-
-    // Update player position
-    player.x += player.velocityX;
-    player.y += player.velocityY;
-
-    // Check for platform collision
-    let onPlatform = false; // Track if the player is on a platform
-    platforms.forEach(platform => {
-        if (player.velocityY > 0 && // Moving down
-            player.x < platform.x + platform.width &&
-            player.x + player.width > platform.x &&
-            player.y + player.height > platform.y &&
-            player.y + player.height < platform.y + platform.height + player.velocityY
-        ) {
-            player.y = platform.y - player.height; // Place player on top of the platform
-            player.velocityY = 0; // Reset vertical velocity
-            onPlatform = true; // Mark that the player is on a platform
-        }
-    });
-
-    // Auto jump if on a platform
-    if (onPlatform) {
-        player.velocityY = player.jumpForce; // Apply jump force
-    }
-
-    // Update totalHeight based on player's position
-    totalHeight = Math.max(totalHeight, player.y); // Ensure totalHeight reflects the highest point reached
-
-    // Calculate height in feet based on totalHeight
-    const heightInFeet = totalHeight * 3.28084;
-
-    // Calculate cameraDiff based on player's position
-    let cameraDiff = 0;
-    if (player.y < canvas.height / 2) {
-        cameraDiff = canvas.height / 2 - player.y;
-    }
-
-    // Move clouds based on cameraDiff
-    clouds.forEach(cloud => {
-        const cloudDensity = getCloudDensity(heightInFeet);
-        if (heightInFeet >= CLOUD_FADE_END) {
-            cloud.y = -1000; // Move clouds off screen if above 60,000 feet
-            return;
-        }
-
-        cloud.y += cameraDiff * (1 + cloud.layer * 0.2);
-        
-        // Reset clouds that move below screen
-        if (cloud.y > canvas.height + 100) {
-            if (cloudDensity > 0 && Math.random() < cloudDensity) {
-                cloud.y = -cloud.height;
-                cloud.x = Math.random() * canvas.width;
-                
-                // Update cloud size based on new height
-                const baseWidth = Math.random() * 120 + 60;
-                const baseHeight = Math.random() * 60 + 30;
-                cloud.width = baseWidth * cloudDensity;
-                cloud.height = baseHeight * cloudDensity;
-                
-                const greyShade = Math.floor(Math.random() * 20) + 80;
-                cloud.color = `rgba(${greyShade}%, ${greyShade}%, ${greyShade}%, ${cloudDensity * 0.8})`;
-            } else {
-                cloud.y = -1000; // Move cloud off screen
-            }
-        }
-    });
-
-    // Update shooting stars
-    if (heightInFeet > STARS_START) {
-        shootingStars.forEach(star => star.update());
-        if (Math.random() < 0.005 && shootingStars.length < 2) {
-            shootingStars.push(new ShootingStar());
-        }
-    }
-
-    // Game over check
-    if (player.y > canvas.height) {
-        gameOver = true;
-        if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('endlessHighScore', highScore.toString());
-        }
-        draw(); // Make sure to draw final frame
-        return; // Stop the game loop
-    }
-
-    draw();
-    
-    if (!gameOver) {
-        gameLoop = requestAnimationFrame(update);
+function stopGame() {
+    if (gameLoop) {
+        cancelAnimationFrame(gameLoop);
+        gameLoop = null;
     }
 }
 
-// keyboard handlers
-function handleKeyDown(e) {
-    activeKeys.add(e.key);
-}
-
-function handleKeyUp(e) {
-    activeKeys.delete(e.key);
-}
-
+// Add key handler for R and P
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowLeft') {
-        activeKeys.add('left'); // Add left key to active keys
-    }
-    if (e.key === 'ArrowRight') {
-        activeKeys.add('right'); // Add right key to active keys
+    if (e.key.toLowerCase() === 'r' && gameOver) {
+        initGame();
+    } else if (e.key.toLowerCase() === 'p' && !gameOver) {
+        togglePause();
+    } else {
+        handleKeyDown(e);
     }
 });
 
-document.addEventListener('keyup', function(e) {
-    if (e.key === 'ArrowLeft') {
-        activeKeys.delete('left'); // Remove left key from active keys
+function togglePause() {
+    if (gameOver) return;
+    
+    if (!isPaused) {
+        isPaused = true;
+    } else {
+        countingDown = true;
+        countdown = 3;
+        lastTime = Date.now();
     }
-    if (e.key === 'ArrowRight') {
-        activeKeys.delete('right'); // Remove right key from active keys
-    }
-});
+}
 
 function exitGame() {
+    // Remove event listeners
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('keyup', handleKeyUp);
     
@@ -703,38 +720,14 @@ function exitGame() {
     }
 }
 
-// Add keyboard event listeners
-document.addEventListener('keydown', function(e) {
-    if (e.key.toLowerCase() === 'r' && gameOver) {
-        initGame();
-    } else if (e.key.toLowerCase() === 'p' && !gameOver) {
-        togglePause();
-    } else {
-        handleKeyDown(e);
-    }
-});
-
-// Add pause toggle function
-function togglePause() {
-    if (gameOver) return;
-    
-    if (!isPaused) {
-        isPaused = true;
-    } else {
-        countingDown = true;
-        countdown = 3;
-        lastTime = Date.now();
-    }
-}
-
-// Update star generation for better size variation
+// Add star generation function
 function generateInitialStars() {
     const maxStars = 200;
     for (let i = 0; i < maxStars; i++) {
         stars.push(new Star(
             Math.random() * canvas.width,
             Math.random() * canvas.height,
-            Math.random() * 2 + 0.5 
+            Math.random() * 2 + 0.5  // Slightly larger size range
         ));
     }
 }
