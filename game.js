@@ -551,25 +551,13 @@ function draw() {
 
 function update() {
     if (isPaused) {
-        if (countingDown) {
-            const currentTime = Date.now();
-            if (currentTime - lastTime >= 1000) {
-                countdown--;
-                lastTime = currentTime;
-                if (countdown <= 0) {
-                    countingDown = false;
-                    isPaused = false;
-                }
-            }
-        }
-        draw();
-        gameLoop = requestAnimationFrame(update);
+        // ... existing pause code ...
         return;
     }
 
-     // Apply gravity
-     player.velocityY += player.gravity;
-    
+    // Apply gravity
+    player.velocityY += player.gravity;
+
     // Update player position based on active keys
     if (activeKeys.has('left')) {
         player.velocityX = -player.speed; // Move left
@@ -578,30 +566,33 @@ function update() {
     } else {
         player.velocityX = 0; // Stop moving if no key is pressed
     }
-     
-     // Update player position
-     player.x += player.velocityX;
-     player.y += player.velocityY;
- 
-     // Check for platform collision
-     let onPlatform = false; // Track if the player is on a platform
-     platforms.forEach(platform => {
-         if (player.velocityY > 0 && // Moving down
-             player.x < platform.x + platform.width &&
-             player.x + player.width > platform.x &&
-             player.y + player.height > platform.y &&
-             player.y + player.height < platform.y + platform.height + player.velocityY
-         ) {
-             player.y = platform.y - player.height; // Place player on top of the platform
-             player.velocityY = 0; // Reset vertical velocity
-             onPlatform = true; // Mark that the player is on a platform
-         }
-     });
-    
-     // Auto jump if on a platform
+
+    // Update player position
+    player.x += player.velocityX;
+    player.y += player.velocityY;
+
+    // Check for platform collision
+    let onPlatform = false; // Track if the player is on a platform
+    platforms.forEach(platform => {
+        if (player.velocityY > 0 && // Moving down
+            player.x < platform.x + platform.width &&
+            player.x + player.width > platform.x &&
+            player.y + player.height > platform.y &&
+            player.y + player.height < platform.y + platform.height + player.velocityY
+        ) {
+            player.y = platform.y - player.height; // Place player on top of the platform
+            player.velocityY = 0; // Reset vertical velocity
+            onPlatform = true; // Mark that the player is on a platform
+        }
+    });
+
+    // Auto jump if on a platform
     if (onPlatform) {
         player.velocityY = player.jumpForce; // Apply jump force
     }
+
+    // Update totalHeight based on player's position
+    totalHeight = Math.max(totalHeight, player.y); // Ensure totalHeight reflects the highest point reached
 
     // Calculate height in feet based on totalHeight
     const heightInFeet = totalHeight * 3.28084;
@@ -610,7 +601,6 @@ function update() {
     let cameraDiff = 0;
     if (player.y < canvas.height / 2) {
         cameraDiff = canvas.height / 2 - player.y;
-        totalHeight += cameraDiff; // Update totalHeight based on camera movement
     }
 
     // Move clouds based on cameraDiff
