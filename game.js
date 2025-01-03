@@ -30,6 +30,40 @@ const platformGap = 100;
 const CLOUD_FADE_START = 20000;
 const CLOUD_FADE_END = 60000;
 
+// Load audio files
+const bounceSound = new Audio('audio/bounce.wav');
+const dingSound = new Audio('audio/ding.wav');
+const bgMusic = new Audio('audio/bg.wav');
+
+// Set the volume for the bounce sound to 3%
+bounceSound.volume = 0.03; // 3% volume
+
+// Set background music to loop
+bgMusic.loop = true;
+
+// Function to start background music
+function playBackgroundMusic() {
+    bgMusic.play().catch(error => {
+        console.error("Error playing background music:", error);
+    });
+}
+
+// Function to play the bounce sound
+function playBounceSound() {
+    bounceSound.currentTime = 0; // Reset to start
+    bounceSound.play().catch(error => {
+        console.error("Error playing bounce sound:", error);
+    });
+}
+
+// Function to play the ding sound
+function playDingSound() {
+    dingSound.currentTime = 0; // Reset to start
+    dingSound.play().catch(error => {
+        console.error("Error playing ding sound:", error);
+    });
+}
+
 // Add star class
 class Star {
     constructor(x, y, size) {
@@ -501,6 +535,7 @@ function initGame() {
     generateInitialStars();
     shootingStars = [new ShootingStar()];
     startShootingStarTimer();
+    playBackgroundMusic(); // Start background music
 }
 
 function handleKeyDown(e) {
@@ -646,11 +681,19 @@ function update() {
             player.y = platform.y - player.height;
             player.velocityY = player.jumpForce;
             
+            // Play bounce sound
+            playBounceSound();
+
             // Only increment score if we haven't touched this platform
             const platformId = `${platform.x},${platform.y}`;
             if (!touchedPlatforms.has(platformId)) {
                 score++;
                 touchedPlatforms.add(platformId);
+
+                // Play ding sound if score is a multiple of 10
+                if (score % 10 === 0) {
+                    playDingSound();
+                }
             }
         }
     });
