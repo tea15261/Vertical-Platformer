@@ -575,6 +575,7 @@ function update() {
      player.y += player.velocityY;
  
      // Check for platform collision
+     let onPlatform = false; // Track if the player is on a platform
      platforms.forEach(platform => {
          if (player.velocityY > 0 && // Moving down
              player.x < platform.x + platform.width &&
@@ -584,9 +585,15 @@ function update() {
          ) {
              player.y = platform.y - player.height; // Place player on top of the platform
              player.velocityY = 0; // Reset vertical velocity
+             onPlatform = true; // Mark that the player is on a platform
          }
      });
     
+     // Auto jump if on a platform
+    if (onPlatform) {
+        player.velocityY = player.jumpForce; // Apply jump force
+    }
+
     // Calculate height in feet based on totalHeight
     const heightInFeet = totalHeight * 3.28084;
 
