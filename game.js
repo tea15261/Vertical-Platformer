@@ -15,8 +15,11 @@ let lastTime = 0;
 let activeKeys = new Set();
 let touchedPlatforms = new Set(); // Track platforms we've scored from
 let stars = [];
-const STARS_START = 30000;  // Start seeing stars at 30,000 feet
+const STARS_START = 25000;  // Start seeing stars at 25,000 feet
 const STARS_FULL = 70000;   // Maximum star density at 70,000 feet
+let shootingStars = [];
+const SHOOTING_STAR_FREQUENCY = 1; // Increase frequency of shooting stars
+let shootingStarTimer;
 
 // Platform properties
 const platformWidth = 80;
@@ -103,6 +106,97 @@ class Star {
         ctx.lineTo(this.x, this.y + this.size * 2);
         
         ctx.stroke();
+        ctx.restore();
+    }
+}
+
+// Add ShootingStar class
+class ShootingStar {
+    constructor() {
+        this.reset();
+        // Initialize at random position along the top and right edges
+        const startFromTop = Math.random() > 0.5;
+        if (startFromTop) {
+            this.x = Math.random() * canvas.width;
+            this.y = -20;
+        } else {
+            this.x = canvas.width + 20;
+            this.y = Math.random() * (canvas.height / 2); // Only in top half
+        }
+    }
+
+    reset() {
+        // Angle between -30 and -60 degrees (converted to radians)
+        this.angle = (-30 - Math.random() * 30) * Math.PI / 180;
+        this.speed = 15 + Math.random() * 25;
+        this.length = 150 + Math.random() * 200; // Increased length for longer streaks
+        this.opacity = 0;
+        this.fadeInSpeed = 0.05;
+        this.fadeOutSpeed = 0.02;
+        this.active = true;
+    }
+
+    update() {
+        if (!this.active) return;
+
+        // Move the shooting star
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+
+        // Fade in
+        if (this.opacity < 1) {
+            this.opacity += this.fadeInSpeed;
+        }
+
+        // Start fading out when near edge
+        if (this.x < 0 || this.y > canvas.height) {
+            this.opacity -= this.fadeOutSpeed;
+            if (this.opacity <= 0) {
+                this.active = false;
+            }
+        }
+    }
+
+    draw(ctx) {
+        if (!this.active || this.opacity <= 0) return;
+
+        // Save context state
+        ctx.save();
+        
+        // Set up gradient for the tail
+        const gradient = ctx.createLinearGradient(
+            this.x, this.y,
+            this.x - Math.cos(this.angle) * this.length,
+            this.y - Math.sin(this.angle) * this.length
+        );
+        
+        // Main streak
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+        gradient.addColorStop(0.1, `rgba(255, 255, 255, ${this.opacity * 0.8})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        // Draw the main streak
+        ctx.beginPath();
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(
+            this.x - Math.cos(this.angle) * this.length,
+            this.y - Math.sin(this.angle) * this.length
+        );
+        ctx.stroke();
+
+        // Add a glowing effect
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity * 0.3})`;
+        ctx.lineWidth = 4;
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(
+            this.x - Math.cos(this.angle) * (this.length * 0.7),
+            this.y - Math.sin(this.angle) * (this.length * 0.7)
+        );
+        ctx.stroke();
+
         ctx.restore();
     }
 }
@@ -405,6 +499,8 @@ function initGame() {
 
     stars = [];
     generateInitialStars();
+    shootingStars = [new ShootingStar()];
+    startShootingStarTimer();
 }
 
 function handleKeyDown(e) {
@@ -570,6 +666,12 @@ function update() {
         return; // Stop the game loop
     }
 
+    // Update shooting stars
+    shootingStars.forEach(star => star.update());
+
+    // Filter out inactive shooting stars
+    shootingStars = shootingStars.filter(star => star.active);
+
     draw();
     
     if (!gameOver) {
@@ -621,6 +723,9 @@ function draw() {
     platforms.forEach(platform => {
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     });
+    
+    // Draw player glow effect
+    drawPlayerGlow(player.x, player.y, player.width, player.height);
 
     // Draw player
     ctx.fillStyle = '#2196F3';
@@ -670,6 +775,13 @@ function draw() {
         ctx.fillText(`High Score: ${highScore}`, canvas.width/2, canvas.height/2 + 40);
         ctx.fillText('Press R to restart', canvas.width/2, canvas.height/2 + 80);
     }
+
+    // Draw shooting stars after regular stars but before clouds
+    if (heightInFeet > STARS_START) {
+        ctx.globalCompositeOperation = 'lighter';
+        shootingStars.forEach(star => star.draw(ctx));
+        ctx.globalCompositeOperation = 'source-over';
+    }
 }
 
 function stopGame() {
@@ -718,6 +830,7 @@ function exitGame() {
         cancelAnimationFrame(gameLoop);
         gameLoop = null;
     }
+    stopShootingStarTimer();
 }
 
 // Add star generation function
@@ -740,4 +853,41 @@ function getStarDensity(heightInFeet) {
         return 1;
     }
     return (heightInFeet - STARS_START) / (STARS_FULL - STARS_START);
+}
+
+// Function to start generating shooting stars
+function startShootingStarTimer() {
+    shootingStarTimer = setInterval(() => {
+        const heightInFeet = totalHeight * 3.28084;
+        if (heightInFeet > STARS_START) { // Only generate stars if above 25,000 feet
+            if (Math.random() < SHOOTING_STAR_FREQUENCY) { // 10% chance to create a new shooting star
+                if (shootingStars.length < 10) { // Allow up to 10 shooting stars
+                    shootingStars.push(new ShootingStar());
+                }
+            }
+        }
+    }, 1000); // Check every 1000 milliseconds (1 second)
+}
+
+// Function to stop generating shooting stars
+function stopShootingStarTimer() {
+    clearInterval(shootingStarTimer);
+}
+
+// Function to draw the player's square glow effect
+function drawPlayerGlow(x, y, width, height) {
+    const glowSize = 5; // Adjust the size of the glow to be smaller (e.g., 5 pixels)
+
+    // Set shadow properties for the glow effect
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Color of the glow
+    ctx.shadowBlur = glowSize; // Size of the glow
+    ctx.shadowOffsetX = 0; // No offset
+    ctx.shadowOffsetY = 0; // No offset
+
+    // Draw the glow rectangle
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; // Optional: fill color for the glow
+    ctx.fillRect(x - glowSize, y - glowSize, width + glowSize * 2, height + glowSize * 2); // Draw the glow rectangle
+
+    // Reset shadow properties to avoid affecting other drawings
+    ctx.shadowColor = 'transparent'; // Reset shadow color
 }
