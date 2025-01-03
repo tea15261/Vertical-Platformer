@@ -33,11 +33,20 @@
             <!-- Settings Menu -->
             <div id="settings-menu" class="menu-screen">
                 <h2>Settings</h2>
-                <div class="wip-content">
-                    <p>Work in Progress</p>
-                    <div class="loading-dots">
-                        <span></span><span></span><span></span>
-                    </div>
+                <div>
+                    <label for="music-volume">Background Music Volume:</label>
+                    <input type="range" id="music-volume" min="0" max="100" value="50" />
+                </div>
+                <div>
+                    <label for="bounce-volume">Bounce Sound Volume:</label>
+                    <input type="range" id="bounce-volume" min="0" max="100" value="25" />
+                </div>
+                <div>
+                    <label for="ding-volume">Ding Sound Volume:</label>
+                    <input type="range" id="ding-volume" min="0" max="100" value="100" />
+                </div>
+                <div>
+                    <button class="reset-button" onclick="resetSettings()">Reset to Default</button>
                 </div>
                 <button class="menu-button back-button" onclick="showScreen('main-menu')">Back</button>
             </div>

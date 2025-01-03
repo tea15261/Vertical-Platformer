@@ -934,3 +934,34 @@ function drawPlayerGlow(x, y, width, height) {
     // Reset shadow properties to avoid affecting other drawings
     ctx.shadowColor = 'transparent'; // Reset shadow color
 }
+
+// Function to apply settings
+function applySettings() {
+    const musicVolume = document.getElementById('music-volume').value / 100;
+    const bounceVolume = document.getElementById('bounce-volume').value / 100;
+    const dingVolume = document.getElementById('ding-volume').value / 100;
+
+    // Set audio volumes
+    bgMusic.volume = musicVolume;
+    bounceSound.volume = bounceVolume;
+    dingSound.volume = dingVolume;
+}
+
+// Function to reset settings to default
+function resetSettings() {
+    document.getElementById('music-volume').value = 50; // Default 50%
+    document.getElementById('bounce-volume').value = 25; // Default 25%
+    document.getElementById('ding-volume').value = 100; // Default 100%
+    applySettings(); // Apply default settings
+}
+
+// Call applySettings when the settings menu is opened
+function showSettingsMenu() {
+    applySettings(); // Apply current settings when opening the menu
+    showScreen('settings-menu');
+}
+
+// Add event listeners for volume sliders
+document.getElementById('music-volume').addEventListener('input', applySettings);
+document.getElementById('bounce-volume').addEventListener('input', applySettings);
+document.getElementById('ding-volume').addEventListener('input', applySettings);

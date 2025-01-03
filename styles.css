@@ -21,10 +21,10 @@ body {
     position: relative;
     width: 400px;
     height: 600px;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
 }
 
 .menu-screen {
@@ -35,7 +35,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .menu-screen.active {
@@ -149,7 +149,6 @@ h2 {
 
 /* Tutorial Screen Styles */
 .tutorial-content {
-    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
     max-width: 500px;
@@ -238,7 +237,6 @@ h2 {
 
 /* Credits Screen Styles */
 .credits-content {
-    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
     max-width: 500px;
@@ -282,4 +280,155 @@ h2 {
 
 #credits-menu button:hover {
     background: #45a049;
+}
+
+/* Settings Menu Styles */
+#settings-menu {
+    color: white; /* Text color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+/* Title styles */
+#settings-menu h2 {
+    font-size: 2em; /* Larger font for the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+/* Label styles */
+#settings-menu label {
+    display: block; /* Block display for labels */
+    margin: 10px 0; /* Space around labels */
+    font-size: 1.2em; /* Font size for labels */
+}
+
+/* Slider styles */
+#settings-menu input[type="range"] {
+    -webkit-appearance: none; /* Remove default styling */
+    width: 100%; /* Full width */
+    height: 10px; /* Height of the slider */
+    background: rgba(255, 255, 255, 0.3); /* Background for the slider */
+    border-radius: 5px; /* Rounded edges */
+    outline: none; /* Remove outline */
+}
+
+#settings-menu input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none;
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #2196F3; /* Thumb color */
+    border-radius: 50%; /* Round thumb */
+    cursor: pointer; /* Pointer cursor */
+}
+
+#settings-menu input[type="range"]::-moz-range-thumb {
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #2196F3; /* Thumb color */
+    border-radius: 50%; /* Round thumb */
+    cursor: pointer; /* Pointer cursor */
+}
+
+/* Button styles */
+#settings-menu .menu-button {
+    margin-top: 20px; /* Space above the button */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #2196F3; /* Button color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 1em; /* Font size */
+}
+
+#settings-menu .menu-button:hover {
+    background-color: #1976D2; /* Darker shade on hover */
+}
+
+/* General styles for the menu screens */
+.menu-screen {
+    display: none; /* Hide by default */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust position to truly center */
+    max-width: 400px; /* Maximum width */
+    color: white; /* Text color */
+    padding: 40px; /* Padding around the content */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+/* Title styles */
+#settings-menu h2 {
+    font-size: 2em; /* Larger font for the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+/* Label styles */
+#settings-menu label {
+    display: block; /* Block display for labels */
+    margin: 10px 0; /* Space around labels */
+    font-size: 1.2em; /* Font size for labels */
+}
+
+/* Slider styles */
+#settings-menu input[type="range"] {
+    -webkit-appearance: none; /* Remove default styling */
+    width: 100%; /* Full width */
+    height: 10px; /* Height of the slider */
+    background: rgba(255, 255, 255, 0.3); /* Background for the slider */
+    border-radius: 5px; /* Rounded edges */
+    outline: none; /* Remove outline */
+}
+
+#settings-menu input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none;
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #2196F3; /* Thumb color */
+    border-radius: 50%; /* Round thumb */
+    cursor: pointer; /* Pointer cursor */
+}
+
+#settings-menu input[type="range"]::-moz-range-thumb {
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #2196F3; /* Thumb color */
+    border-radius: 50%; /* Round thumb */
+    cursor: pointer; /* Pointer cursor */
+}
+
+/* Button styles */
+#settings-menu .menu-button {
+    margin-top: 20px; /* Space above the button */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #2196F3; /* Button color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 1em; /* Font size */
+}
+
+#settings-menu .menu-button:hover {
+    background-color: #1976D2; /* Darker shade on hover */
 } 
+
+/* Reset to Default Button Styles */
+#settings-menu .reset-button {
+    margin-top: 20px; /* Space above the button */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #FF5722; /* Distinct color for the reset button */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 1em; /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+#settings-menu .reset-button:hover {
+    background-color: #E64A19; /* Darker shade on hover */
+}
